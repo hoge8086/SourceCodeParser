@@ -29,7 +29,8 @@ namespace SourceCodeParser.Domain
             if (parser == null)
                 return null;
 
-            return parser.Parse(path, source);
+            //return parser.Parse(path, source);
+            return new SourceCode("", "", new List<Comment>(), new List<Function>());
         }
 
         public List<SourceCode> ParseSourceFiles(string[] paths)

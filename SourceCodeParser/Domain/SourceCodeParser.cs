@@ -41,21 +41,21 @@ namespace SourceCodeParser.Domain
             this.setting = setting;
         }
 
-        public SourceCode Parse(string path, string source)
-        {
-            return new SourceCode(
-                path,
-                source,
-                ParseComments(source),
-                ParseFunctions(source));
-        }
+        //public SourceCode Parse(string path, string code)
+        //{
+        //    return new SourceCode(
+        //        path,
+        //        code,
+        //        ParseComments(code),
+        //        ParseFunctions(code));
+        //}
 
         /// <summary>
         /// 改行は保持したまｍ、コメントと無視対象の文字列を削除する
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        private string RemoveCommentAndIngore(string source)
+        public string RemoveCommentAndIngore(string source)
         {
             string sourceWithoutComentAndIgnore = string.Empty;
             int currentIndex = 0;
@@ -72,17 +72,17 @@ namespace SourceCodeParser.Domain
             return sourceWithoutComentAndIgnore + source.Substring(currentIndex);
         }
 
-        private List<Comment> ParseComments(string source)
+        public List<Comment> ParseComments(string code)
         {
             var comments = new List<Comment>();
             Regex r = new Regex(string.Join("|", setting.CommentAndIgnoreRegexp), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
-            for(Match m = r.Match(source); m.Success; m = m.NextMatch())
+            for(Match m = r.Match(code); m.Success; m = m.NextMatch())
             {
                 if(m.Groups["comment"] != null)
                 {
                     var codeRange = new CodeRange(
-                        CountLine(source.Substring(0, m.Index)),
+                        CountLine(code.Substring(0, m.Index)),
                         CountLine(m.Value));
                     comments.Add(new Comment(codeRange, m.Groups["comment"].Value));
                 }
@@ -90,9 +90,9 @@ namespace SourceCodeParser.Domain
             return comments;
         }
 
-        private List<Function> ParseFunctions(string source)
+        public List<Function> ParseFunctions(string code)
         {
-            source = RemoveCommentAndIngore(source);
+            code = RemoveCommentAndIngore(code);
 
             //System.Diagnostics.Debug.WriteLine("-----------------------------");
             //System.Diagnostics.Debug.WriteLine(source);
@@ -100,11 +100,11 @@ namespace SourceCodeParser.Domain
             var functions = new List<Function>();
             Regex r = new Regex(string.Join("|", setting.FunctionRegexp), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
-            for(Match m = r.Match(source); m.Success; m = m.NextMatch())
+            for(Match m = r.Match(code); m.Success; m = m.NextMatch())
             {
                 var range = new CodeRange(
-                        CountLine(source.Substring(0, m.Index)),
-                        CountLine(ExtractFunctionCode(m.Index, source)));
+                        CountLine(code.Substring(0, m.Index)),
+                        CountLine(ExtractFunctionCode(m.Index, code)));
                 functions.Add(new Function(range, m.Value));
             }
             return functions;
