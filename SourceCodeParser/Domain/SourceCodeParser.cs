@@ -102,34 +102,30 @@ namespace SourceCodeParser.Domain
 
             for(Match m = r.Match(source); m.Success; m = m.NextMatch())
             {
-                var codeRange = new CodeRange(
-                    CountLine(source.Substring(0, m.Index)),
-                    CountFunctionLine(m.Index, source));
-                functions.Add(new Function(codeRange, m.Value));
+                var range = new CodeRange(
+                        CountLine(source.Substring(0, m.Index)),
+                        CountLine(ExtractFunctionCode(m.Index, source)));
+                functions.Add(new Function(range, m.Value));
             }
             return functions;
         }
 
-        private int CountFunctionLine(int startIndex, string source)
+        private string ExtractFunctionCode(int startIndex, string code)
         {
-            int countLine = 1;
             int nest = 0;
-            for(int i=startIndex; i<source.Length; i++)
+            for(int i=startIndex; i<code.Length; i++)
             {
-                if (source.Substring(i).StartsWith(setting.FunctionBeginMarker))
+                if (code.Substring(i).StartsWith(setting.FunctionBeginMarker))
                     nest++;
 
-                if (source.Substring(i).StartsWith(setting.FunctionEndMarker))
+                if (code.Substring(i).StartsWith(setting.FunctionEndMarker))
                 {
                     nest--;
                     if (nest <= 0)
-                        return countLine;
+                        return code.Substring(startIndex, i - startIndex + 1);
                 }
-
-                if (source[i] == '\n')
-                    countLine++;
             }
-            return countLine;
+            return code.Substring(startIndex);
         }
 
         private int CountLine(string text)
