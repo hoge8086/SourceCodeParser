@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Runtime.Serialization.Json;
+using System.IO;
+
+namespace SourceCodeParser.Infrastructure
+{
+    public class ParseSettingLoader
+    {
+        private static readonly DataContractJsonSerializerSettings SerializeSettings = 
+            new DataContractJsonSerializerSettings
+            {
+                UseSimpleDictionaryFormat = true
+            };
+
+        public Domain.SourceCodeParser.Setting  Load(string path)
+        {
+            Domain.SourceCodeParser.Setting setting;
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                var serializer = new DataContractJsonSerializer(typeof(Domain.SourceCodeParser.Setting));
+                setting = serializer.ReadObject(fs) as Domain.SourceCodeParser.Setting;
+            }
+            return setting;
+        }
+
+        public void Save(string path, Domain.SourceCodeParser.Setting setting)
+        {
+            using (var stream = File.Create(path))
+            using (var writer = JsonReaderWriterFactory.CreateJsonWriter(stream, Encoding.UTF8, true, true, "  "))
+            {
+                var serializer = new DataContractJsonSerializer(typeof(Domain.SourceCodeParser.Setting), SerializeSettings);
+                serializer.WriteObject(writer, setting);
+                writer.Flush();
+            }
+
+        }
+    }
+}

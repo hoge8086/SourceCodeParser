@@ -1,0 +1,18 @@
+{
+  "TargetExtensions": [
+    ".c",
+    ".cpp",
+    ".h"
+  ],
+  "CommentAndIgnoreRegexp": [
+    "\/\/(?<comment>.*)",
+    "\/\\*(?<comment>(.|\\n)*?)\\*\/",
+    "#(.|\\n)*?(?<!\\\\)(?=\\r|\\n)",
+    "\"(.|\\n)*?(?<!\\\\)\""
+  ],
+  "FunctionBeginMarker": "{",
+  "FunctionEndMarker": "}",
+  "FunctionRegexp": [
+    "(?=[^{]*\\b\\w+\\b[^{]*\\()(?!\\b(public|private|protected)\\b)\\b\\w[^;}{]+(?<!\\b(for|if|else|while|foreach|switch)\\b[^;}{]*)(?={)"
+  ]
+}
