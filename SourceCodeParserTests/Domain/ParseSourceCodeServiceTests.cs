@@ -25,6 +25,7 @@ namespace SourceCodeParser.Domain.Tests
         {
             var source = service.ParseSourceFile(@"CEditView_Mouse.cpp");
             var expect = new TextFileReaderImpl().Read(@"result_CEditView_Mouse.txt");
+            Assert.AreEqual(expect.Length, source.ToString().Length);
             Assert.AreEqual(expect, source.ToString());
             //System.IO.File.WriteAllText(@".\out.txt", source.ToString());
         }
