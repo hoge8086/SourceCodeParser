@@ -43,12 +43,17 @@
   <ItemGroup>
     <Compile Include="Domain\IParserFactory.cs" />
     <Compile Include="Domain\ITextFileReader.cs" />
+    <Compile Include="Domain\Modefications.cs" />
     <Compile Include="Domain\ModificationParser\IModifiedBlockDetector.cs" />
     <Compile Include="Domain\ModificationParser\ModifiedBlockDetector.cs" />
     <Compile Include="Domain\ModificationParser\ModificationParser.cs" />
     <Compile Include="Domain\ParseSourceCodeService.cs" />
+    <Compile Include="Domain\SourceCodeParser\Comment.cs" />
+    <Compile Include="Domain\SourceCodeParser\Function.cs" />
+    <Compile Include="Domain\Common\LineRange.cs" />
     <Compile Include="Domain\SourceCode.cs" />
-    <Compile Include="Domain\SourceCodeParser.cs" />
+    <Compile Include="Domain\SourceCodeParser\SourceCodeParser.cs" />
+    <Compile Include="Domain\Common\StringUtil.cs" />
     <Compile Include="Infrastructure\ParserFactoryImpl.cs" />
     <Compile Include="Infrastructure\ParserSettingLoader.cs" />
     <Compile Include="Infrastructure\TextFileReaderImpl.cs" />
@@ -59,8 +64,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Domain\SourceCodeParser\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

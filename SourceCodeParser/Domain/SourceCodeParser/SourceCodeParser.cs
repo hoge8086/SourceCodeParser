@@ -3,7 +3,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Runtime.Serialization;
 
-namespace SourceCodeParser.Domain
+using SourceCodeParser.Domain.Common;
+namespace SourceCodeParser.Domain.SourceCodeParser
 {
     public class SourceCodeParser
     {
@@ -40,15 +41,6 @@ namespace SourceCodeParser.Domain
         {
             this.setting = setting;
         }
-
-        //public SourceCode Parse(string path, string code)
-        //{
-        //    return new SourceCode(
-        //        path,
-        //        code,
-        //        ParseComments(code),
-        //        ParseFunctions(code));
-        //}
 
         /// <summary>
         /// 改行は保持したまｍ、コメントと無視対象の文字列を削除する
@@ -104,16 +96,16 @@ namespace SourceCodeParser.Domain
             {
                 var range = new LineRange(
                         CountLine(code.Substring(0, m.Index)),
-                        CountLine(ExtractFunctionCode(m.Index, code)));
+                        CountLine(ExtractFunctionCode(code.Substring(m.Index))));
                 functions.Add(new Function(range, m.Value));
             }
             return functions;
         }
 
-        private string ExtractFunctionCode(int startIndex, string code)
+        private string ExtractFunctionCode(string code)
         {
             int nest = 0;
-            for(int i=startIndex; i<code.Length; i++)
+            for(int i=0; i<code.Length; i++)
             {
                 if (code.Substring(i).StartsWith(setting.FunctionBeginMarker))
                     nest++;
@@ -122,10 +114,10 @@ namespace SourceCodeParser.Domain
                 {
                     nest--;
                     if (nest <= 0)
-                        return code.Substring(startIndex, i - startIndex + 1);
+                        return code.Substring(0, i + 1);
                 }
             }
-            return code.Substring(startIndex);
+            return code;
         }
 
         private int CountLine(string text)

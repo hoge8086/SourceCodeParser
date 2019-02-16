@@ -1,13 +1,13 @@
 ﻿
+using SourceCodeParser.Domain.SourceCodeParser;
 using SourceCodeParser.Domain;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace SourceCodeParser.Infrastructure
 {
     public class ParserFactoryImpl : IParserFactory
     {
-        private List<Domain.SourceCodeParser.Setting> settings = new List<Domain.SourceCodeParser.Setting>();
+        private List<Domain.SourceCodeParser.SourceCodeParser.Setting> settings = new List<Domain.SourceCodeParser.SourceCodeParser.Setting>();
 
         public ParserFactoryImpl()
         {
@@ -17,14 +17,14 @@ namespace SourceCodeParser.Infrastructure
             }
         }
 
-        public Domain.SourceCodeParser createParser(string targetSourcePath)
+        public Domain.SourceCodeParser.SourceCodeParser createParser(string targetSourcePath)
         {
             var extension = System.IO.Path.GetExtension(targetSourcePath);
             var setting = settings.FirstOrDefault(s => s.TargetExtensions.Contains(extension));
             if (setting == null)
                 return null;
 
-            return new Domain.SourceCodeParser(setting);
+            return new Domain.SourceCodeParser.SourceCodeParser(setting);
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿namespace SourceCodeParser.Domain
+﻿using SourceCodeParser.Domain.SourceCodeParser;
+namespace SourceCodeParser.Domain
 {
     public interface IParserFactory
     {
-        SourceCodeParser createParser(string targetSourcePath);
+        Domain.SourceCodeParser.SourceCodeParser createParser(string targetSourcePath);
     }
 }

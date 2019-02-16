@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using SourceCodeParser.Domain.Common;
+using SourceCodeParser.Domain.SourceCodeParser;
 namespace SourceCodeParser.Domain
 {
     public class ParseSourceCodeService
@@ -30,7 +32,7 @@ namespace SourceCodeParser.Domain
                 return null;
 
             //return parser.Parse(path, source);
-            return new SourceCode("", "", new List<Comment>(), new List<Function>());
+            return new SourceCode("", "", new List<Comment>(), new List<Function>(), null);
         }
 
         public List<SourceCode> ParseSourceFiles(string[] paths)
