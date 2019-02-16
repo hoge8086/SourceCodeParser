@@ -20,9 +20,9 @@ namespace SourceCodeParser.Domain
     public class Function
     {
         public string Definition { get; private set; }
-        public CodeRange Range { get; private set; }
+        public LineRange Range { get; private set; }
 
-        public Function(CodeRange range, string definition)
+        public Function(LineRange range, string definition)
         {
             Definition = StringUtil.TrimWhiteSpace(definition);
             Range = range;
@@ -37,9 +37,9 @@ namespace SourceCodeParser.Domain
     public class Comment
     {
         public string Text { get; private set; }
-        public CodeRange Range { get; private set; }
+        public LineRange Range { get; private set; }
 
-        public Comment(CodeRange range, string text)
+        public Comment(LineRange range, string text)
         {
             Text = StringUtil.TrimWhiteSpace(text);
             Range = range;
@@ -51,12 +51,12 @@ namespace SourceCodeParser.Domain
         }
     }
 
-    public class CodeRange
+    public class LineRange
     {
         public int StartLine { get; private set; }
         public int LineNum { get; private set; }
 
-        public CodeRange(
+        public LineRange(
             int startLine,
             int lineNum)
         {
@@ -71,6 +71,16 @@ namespace SourceCodeParser.Domain
 
     }
 
+    public class Modefication
+    {
+        public List<LineRange> ModefiedRange { get; private set; }
+
+        public Modefication(List<LineRange> modefiedRange)
+        {
+            this.ModefiedRange = modefiedRange;
+        }
+    }
+
     public class SourceCode
     {
         public string Path { get; private set; }
@@ -80,12 +90,12 @@ namespace SourceCodeParser.Domain
 
         public SourceCode(
             string path,
-            string source,
+            string code,
             List<Comment> comments,
             List<Function> functions)
         {
             Path = path;
-            Lines = source.Split('\n').ToList();
+            Lines = code.Split('\n').Select(l => l + "\n").ToList();
             Comments = comments;
             Functions = functions;
         }

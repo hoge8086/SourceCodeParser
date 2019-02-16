@@ -43,6 +43,9 @@
   <ItemGroup>
     <Compile Include="Domain\IParserFactory.cs" />
     <Compile Include="Domain\ITextFileReader.cs" />
+    <Compile Include="Domain\ModificationParser\IModifiedBlockDetector.cs" />
+    <Compile Include="Domain\ModificationParser\ModifiedBlockDetector.cs" />
+    <Compile Include="Domain\ModificationParser\ModificationParser.cs" />
     <Compile Include="Domain\ParseSourceCodeService.cs" />
     <Compile Include="Domain\SourceCode.cs" />
     <Compile Include="Domain\SourceCodeParser.cs" />
@@ -55,6 +58,9 @@
     <None Include=".cpp.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Domain\SourceCodeParser\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

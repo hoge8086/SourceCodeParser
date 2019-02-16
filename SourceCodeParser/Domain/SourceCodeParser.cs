@@ -81,7 +81,7 @@ namespace SourceCodeParser.Domain
             {
                 if(m.Groups["comment"] != null)
                 {
-                    var codeRange = new CodeRange(
+                    var codeRange = new LineRange(
                         CountLine(code.Substring(0, m.Index)),
                         CountLine(m.Value));
                     comments.Add(new Comment(codeRange, m.Groups["comment"].Value));
@@ -102,7 +102,7 @@ namespace SourceCodeParser.Domain
 
             for(Match m = r.Match(code); m.Success; m = m.NextMatch())
             {
-                var range = new CodeRange(
+                var range = new LineRange(
                         CountLine(code.Substring(0, m.Index)),
                         CountLine(ExtractFunctionCode(m.Index, code)));
                 functions.Add(new Function(range, m.Value));
