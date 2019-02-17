@@ -10,5 +10,11 @@ namespace SourceCodeParser.Domain.Common
             text = Regex.Replace(text, @"\s+$", "");
             return Regex.Replace(text, @"\s+", " ");
         }
+        public static string TrimWhiteSpaceWithoutCRLF(string text)
+        {
+            text = Regex.Replace(text, @"(^|(?<=\n))[ \t]+", "");
+            text = Regex.Replace(text, @"[ \t]+($|(?=\n))", "");
+            return Regex.Replace(text, @"[ \t]+", " ");
+        }
     }
 }

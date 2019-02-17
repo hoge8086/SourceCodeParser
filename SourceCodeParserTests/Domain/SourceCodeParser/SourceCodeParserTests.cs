@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SourceCodeParser.Domain;
+using SourceCodeParser.Domain.SourceCodeParser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SourceCodeParser.Infrastructure;
 
-namespace SourceCodeParser.Domain.Tests
+namespace SourceCodeParser.Domain.SourceCodeParser.Tests
 {
     [TestClass()]
     public class SourceCodeParserTests

@@ -48,6 +48,7 @@
     <Compile Include="Domain\ModificationParser\ModifiedBlockDetector.cs" />
     <Compile Include="Domain\ModificationParser\ModificationParser.cs" />
     <Compile Include="Domain\ParseSourceCodeService.cs" />
+    <Compile Include="Domain\SourceCodeFactory.cs" />
     <Compile Include="Domain\SourceCodeParser\Comment.cs" />
     <Compile Include="Domain\SourceCodeParser\Function.cs" />
     <Compile Include="Domain\Common\LineRange.cs" />

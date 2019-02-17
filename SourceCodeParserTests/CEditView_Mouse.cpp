@@ -80,9 +80,11 @@ void CEditView::OnLBUTTONDOWN( WPARAM fwKeys, int _xPos , int _yPos )
 	BOOL		tripleClickMode = FALSE;	// 2007.10.02 nasukoji	トリプルクリックであることを示す
 	int			nFuncID = 0;				// 2007.12.02 nasukoji	マウス左クリックに対応する機能コード
 
+	// ▼ 修正行コメント
 	if( m_pcEditDoc->m_cLayoutMgr.GetLineCount() == 0 ){
 		return;
 	}
+	// ▲ 修正行コメント
 
 	/* 辞書Tipが起動されている */
 	if( 0 == m_dwTipTimer ){
@@ -561,7 +563,9 @@ BOOL CEditView::CheckTripleClick( CMyPoint ptMouse )
 		(dpos.x <= GetSystemMetrics(SM_CXDOUBLECLK) ) &&
 		(dpos.y <= GetSystemMetrics(SM_CYDOUBLECLK)))
 	{
+		// ▼ 修正行コメント
 		result = TRUE;
+		// ▲ 修正行コメント
 	}else{
 		m_dwTripleClickCheck = 0;	// トリプルクリックチェック OFF
 	}
@@ -642,7 +646,7 @@ void CEditView::OnMBUTTONDOWN( WPARAM fwKeys, int xPos , int yPos )
 			return;
 		}else{
 			m_nAutoScrollMode = 1;
-			m_cAutoScrollMousePos = CMyPoint(xPos, yPos);
+			m_cAutoScrollMousePos = CMyPoint(xPos, yPos); // 修正行コメント
 			::SetCapture( GetHwnd() );
 		}
 	}
@@ -698,7 +702,7 @@ void CEditView::OnMBUTTONUP( WPARAM fwKeys, int xPos , int yPos )
 		::PostMessageCmd( ::GetParent( m_hwndParent ), WM_COMMAND, MAKELONG( nFuncID, CMD_FROM_MOUSE ),  (LPARAM)NULL );
 	}
 	if( m_nAutoScrollMode ){
-		AutoScrollExit();
+		AutoScrollExit();// 修正行コメント
 	}
 }
 
@@ -1425,6 +1429,7 @@ LRESULT CEditView::OnMOUSEWHEEL2( WPARAM wParam, LPARAM lParam, bool bHorizontal
 	return bHorizontalMsg ? TRUE: 0;
 }
 
+// ▼ 修正行コメント
 /*! 垂直マウススクロール
 */
 LRESULT CEditView::OnMOUSEWHEEL( WPARAM wParam, LPARAM lParam )
@@ -2230,6 +2235,7 @@ DWORD CEditView::TranslateDropEffect( CLIPFORMAT cf, DWORD dwKeyState, POINTL pt
 	}
 	return dwEffect;
 }
+// ▲ 修正行コメント
 
 bool CEditView::IsDragSource( void )
 {

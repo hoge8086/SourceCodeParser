@@ -33,9 +33,8 @@ namespace SourceCodeParser.Domain.ModificationParser
 
             public LineRange GetRange(int endLine)
             {
-                if (!IsInBlock())
+                if (beginLine < 0)
                     return null;
-
                 return new LineRange(beginLine, endLine - beginLine + 1);
             }
         }
@@ -57,7 +56,7 @@ namespace SourceCodeParser.Domain.ModificationParser
             {
                 if(detector.IsBeginLine(lines[i]))
                 {
-                    currentBlock.Begin(i);
+                    currentBlock.Begin(i+1);
                 }
                 
                 // 注意：修正行が1行のみの場合があるので、else-ifではない
@@ -65,7 +64,7 @@ namespace SourceCodeParser.Domain.ModificationParser
                 {
                     if(currentBlock.End())
                     {
-                        rangeList.Add(currentBlock.GetRange(i));
+                        rangeList.Add(currentBlock.GetRange(i+1));
                         currentBlock.Reset();
                     }
                 }

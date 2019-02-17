@@ -8,7 +8,7 @@ namespace SourceCodeParser.Domain.SourceCodeParser
 
         public Comment(LineRange range, string text)
         {
-            Text = StringUtil.TrimWhiteSpace(text);
+            Text = StringUtil.TrimWhiteSpaceWithoutCRLF(text);
             Range = range;
         }
 

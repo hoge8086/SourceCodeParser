@@ -2,21 +2,38 @@
 {
     public class LineRange
     {
-        public int StartLine { get; private set; }
-        public int LineNum { get; private set; }
+        public int Begin { get; private set; }
+        public int End { get { return Begin + Num - 1; } }
+        public int Num { get; private set; }
 
         public LineRange(
-            int startLine,
-            int lineNum)
+            int begin,
+            int num)
         {
-            StartLine = startLine;
-            LineNum = lineNum;
+            Begin = begin;
+            Num = num;
         }
 
+        public bool Overlap(LineRange range)
+        {
+            if (IsIn(range.Begin))
+                return true;
+            if (IsIn(range.End))
+                return true;
+            if (range.IsIn(range.Begin))
+                return true;
+            return false;
+        }
+
+        public bool IsIn(int lineNum)
+        {
+            return (Begin <= lineNum && lineNum <= End);
+        }
         public override string ToString()
         {
-            return StartLine.ToString() + "-" + (StartLine + LineNum - 1).ToString();
+            return Begin.ToString() + "-" + (Begin + Num - 1).ToString();
         }
+
 
     }
 }

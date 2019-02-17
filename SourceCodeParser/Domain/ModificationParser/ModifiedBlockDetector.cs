@@ -25,18 +25,12 @@ namespace SourceCodeParser.Domain.ModificationParser
 
         public bool IsBeginLine(string line)
         {
-            //注意:先に複数修正かをチェックする必要がある
-            if (multi.IsBeginLine(line))
-                return true;
-            return single.IsMatch(line);
+            return single.IsMatch(line) && !multi.IsEndLine(line);
         }
 
         public bool IsEndLine(string line)
         {
-            //注意:先に複数修正かをチェックする必要がある
-            if (multi.IsEndLine(line))
-                return true;
-            return single.IsMatch(line);
+            return single.IsMatch(line) && !multi.IsBeginLine(line);
         }
     }
 

@@ -55,7 +55,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Domain\SourceCodeParserTests.cs" />
+    <Compile Include="Domain\SourceCodeParser\SourceCodeParserTests.cs" />
+    <Compile Include="Domain\SourceCodeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +73,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="result_CEditView_Mouse.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="modification.cpp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="test.cpp">
