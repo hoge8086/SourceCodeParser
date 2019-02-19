@@ -6,54 +6,65 @@ using System.Threading.Tasks;
 
 using SourceCodeParser.Domain.Common;
 using SourceCodeParser.Domain.SourceCodeParser;
+using SourceCodeParser.Domain.ModificationParser;
 namespace SourceCodeParser.Domain
 {
     public class ParseSourceCodeService
     {
         private ITextFileReader textFileReader;
-        private IParserFactory parserFactory;
+        private SourceCodeFactory sourceFactory;
+        private IOutputModifiedFunctions output;
 
         public ParseSourceCodeService(
             ITextFileReader textFileReader,
-            IParserFactory parserFactory)
+            IOutputModifiedFunctions output,
+            IParserFactory parserFactory,
+            IModifiedBlockDetector modificationDetector)
         {
             this.textFileReader = textFileReader;
-            this.parserFactory = parserFactory;
+            this.output = output;
+            this.sourceFactory = new SourceCodeFactory(
+                                    textFileReader, parserFactory,
+                                    new ModificationParser.ModificationParser(modificationDetector));
         }
 
-        public SourceCode ParseSourceFile(string path)
+        public List<FunctionSummary> ParseSourceFile(string path)
         {
             if(!System.IO.File.Exists(path))
                 throw new ArgumentException("not found file.");
 
-            var source = textFileReader.Read(path);
-            var parser = parserFactory.createParser(path);
-            if (parser == null)
+            var source = this.sourceFactory.Create(path);
+            if (source == null)
                 return null;
 
-            //return parser.Parse(path, source);
-            return new SourceCode("", "", new List<Comment>(), new List<Function>(), null);
+            return source.ModifiedFunctionSummary();
         }
 
-        public List<SourceCode> ParseSourceFiles(string[] paths)
+        public List<FunctionSummary> ParseSourceFiles(string[] paths)
         {
-            List<SourceCode> sources = new List<SourceCode>();
+            List<FunctionSummary> functions = new List<FunctionSummary>();
             foreach(var path in paths)
             {
-                var source = ParseSourceFile(path);
-                if(source != null)
-                    sources.Add(source);
+                var funcs = ParseSourceFile(path);
+                if (funcs != null)
+                    functions.AddRange(funcs);
             }
-            return sources;
+            return functions;
         }
 
-        public List<SourceCode> ParseAllFiles(string directoryPath)
-        {
-            if (!System.IO.Directory.Exists(directoryPath))
-                throw new ArgumentException("not found directory.");
+        //public List<FunctionSummary> ParseAllFilesInDirectory(string directoryPath)
+        //{
+        //    if (!System.IO.Directory.Exists(directoryPath))
+        //        throw new ArgumentException("not found directory.");
 
-            var paths = System.IO.Directory.GetFiles(directoryPath, "*", System.IO.SearchOption.AllDirectories);
-            return ParseSourceFiles(paths);
+        //    var paths = System.IO.Directory.GetFiles(directoryPath, "*", System.IO.SearchOption.AllDirectories);
+        //    return ParseSourceFiles(paths);
+        //}
+
+        public void OutputModifiedFunctions(string[] paths)
+        {
+            var functions = ParseSourceFiles(paths);
+            output.Write(functions);
         }
     }
 }

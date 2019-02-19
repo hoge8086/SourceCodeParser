@@ -43,7 +43,7 @@ namespace SourceCodeParser.Domain.SourceCodeParser
         }
 
         /// <summary>
-        /// 改行は保持したまｍ、コメントと無視対象の文字列を削除する
+        /// 改行は保持したまま、コメントと無視対象の文字列を削除する
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>

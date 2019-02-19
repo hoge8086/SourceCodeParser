@@ -11,10 +11,12 @@ namespace SourceCodeParser.Domain
 
     public class FunctionSummary
     {
+        public string Path { get; private set; }
         public string Definition { get; private set; }
         public string Comment { get; private set; }
-        public FunctionSummary(string definition, string comment)
+        public FunctionSummary(string path, string definition, string comment)
         {
+            Path = path;
             Definition = definition;
             Comment = comment;
         }
@@ -22,9 +24,9 @@ namespace SourceCodeParser.Domain
         {
             string str = string.Empty;
             str += "---------------------\n";
-            str += "■" + Definition + "\n";
-            str += "---------------------\n";
-            str += Comment + "\n";
+            str += "パス: " + Path + "\n";
+            str += "定義: " + Definition + "\n";
+            str += "概要: " + Comment;
             return str;
         }
     }
@@ -55,30 +57,29 @@ namespace SourceCodeParser.Domain
         {
             return new List<FunctionSummary>(
                     Functions.Where(f => Modifications.IsModified(f.Range))
-                    .Select(f => new FunctionSummary(f.Definition, FindFunctionComment(f.Range.Begin))));
+                    .Select(f => new FunctionSummary(Path, f.Definition, FindFunctionComment(f.Range.Begin) ?? "")));
         }
 
         private string FindFunctionComment(int startFunctionLineNum)
         {
             if (startFunctionLineNum < 0)
-                return string.Empty;
+                return null;
 
             var comment = Comments.FirstOrDefault(c => c.Range.IsIn(startFunctionLineNum - 1));
             if(comment == null)
-                return string.Empty;
+                return null;
 
-            return FindFunctionComment(comment.Range.Begin) + comment.Text;
+            var upperComment = FindFunctionComment(comment.Range.Begin);
+            if(upperComment == null)
+                return comment.Text;
+
+            return upperComment + "\n" + comment.Text;
         }
-
 
         public override string ToString()
         {
             string text = string.Empty;
-            //text += "対象ファイル:" + Path + "\n";
-            //text += "------------[関数一覧]-------------\n";
             text += string.Join("\n", Functions.Select(f => f.ToString())) + "\n";
-            //text += "\n------------[コメント一覧]-------------\n";
-            //text += string.Join("\n", Comments.Select(c => c.ToString()));
             return text;
         }
     }

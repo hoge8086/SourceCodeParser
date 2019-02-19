@@ -20,7 +20,7 @@
                 return true;
             if (IsIn(range.End))
                 return true;
-            if (range.IsIn(range.Begin))
+            if (range.IsIn(Begin))
                 return true;
             return false;
         }

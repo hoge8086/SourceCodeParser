@@ -27,8 +27,11 @@ namespace SourceCodeParser.Domain
 
         public SourceCode Create(string path)
         {
-            var code = textFileReader.Read(path);
             var sourceParser = sourceParserFactory.createParser(path);
+            if (sourceParser == null)
+                return null;
+
+            var code = textFileReader.Read(path);
             return new SourceCode(
                     path,
                     code,
