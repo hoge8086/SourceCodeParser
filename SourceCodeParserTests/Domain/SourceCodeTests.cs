@@ -27,7 +27,7 @@ namespace SourceCodeParser.Domain.Tests
             
             var source = factory.Create(@"CEditView_Mouse.cpp");
             var funcs = source.FunctionSummary();
-            System.IO.File.WriteAllText("out.txt", string.Join("\n", funcs));
+            System.IO.File.WriteAllText("out.txt", string.Join("\n", source.Functions));
 
         }
 

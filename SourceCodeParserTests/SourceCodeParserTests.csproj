@@ -75,6 +75,7 @@
     <Content Include="result_CEditView_Mouse.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="_result_CEditView_Mouse.txt" />
     <Content Include="modification.cpp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
