@@ -37,27 +37,34 @@ namespace SourceCodeParser.Domain
         public List<string> Lines { get; private set; }
         public List<Comment> Comments { get; private set; }
         public List<Function> Functions { get; private set; }
-        public Modifications Modifications { get; private set; }
+        //public Modifications Modifications { get; private set; }
 
         public SourceCode(
             string path,
             string code,
             List<Comment> comments,
-            List<Function> functions,
-            List<LineRange> modificationRange)
+            List<Function> functions)
+            //List<LineRange> modificationRange)
         {
             Path = path;
             Lines = code.Split('\n').Select(l => l + "\n").ToList();
             Comments = comments;
             Functions = functions;
-            Modifications = new Modifications(modificationRange);
         }
 
-        public List<FunctionSummary> ModifiedFunctionSummary()
+        public List<FunctionSummary> FunctionSummary()
         {
-            return new List<FunctionSummary>(
-                    Functions.Where(f => Modifications.IsModified(f.Range))
-                    .Select(f => new FunctionSummary(Path, f.Definition, FindFunctionComment(f.Range.Begin) ?? "")));
+            return CreateFunctionSummary(Functions);
+        }
+
+        public List<FunctionSummary> FunctionSummary(Modifications modifications)
+        {
+            return CreateFunctionSummary(Functions.Where(f => modifications.IsModified(f.Range)).ToList());
+        }
+
+        private List<FunctionSummary> CreateFunctionSummary(List<Function> functions)
+        {
+            return functions.Select(f => new FunctionSummary(Path, f.Definition, FindFunctionComment(f.Range.Begin) ?? "")).ToList();
         }
 
         private string FindFunctionComment(int startFunctionLineNum)

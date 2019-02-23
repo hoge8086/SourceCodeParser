@@ -18,17 +18,15 @@ namespace SourceCodeParser.Domain
         public ParseSourceCodeService(
             ITextFileReader textFileReader,
             IOutputModifiedFunctions output,
-            IParserFactory parserFactory,
-            IModifiedBlockDetector modificationDetector)
+            IParserFactory parserFactory)
+            //IModifiedBlockDetector modificationDetector)
         {
             this.textFileReader = textFileReader;
             this.output = output;
-            this.sourceFactory = new SourceCodeFactory(
-                                    textFileReader, parserFactory,
-                                    new ModificationParser.ModificationParser(modificationDetector));
+            this.sourceFactory = new SourceCodeFactory(textFileReader, parserFactory);
         }
 
-        public List<FunctionSummary> ParseSourceFile(string path)
+        public List<FunctionSummary> ParseSourceFile(string path, IModifiedBlockDetector modificationDetector)
         {
             if(!System.IO.File.Exists(path))
                 throw new ArgumentException("not found file.");
@@ -37,15 +35,24 @@ namespace SourceCodeParser.Domain
             if (source == null)
                 return null;
 
-            return source.ModifiedFunctionSummary();
+            if(modificationDetector != null)
+            {
+                var modificationParser = new ModificationParser.ModificationParser(modificationDetector);
+                var code = textFileReader.Read(path);
+                var modification = modificationParser.Parse(code);
+                return source.FunctionSummary(modification);
+            }
+
+            return source.FunctionSummary();
         }
 
-        public List<FunctionSummary> ParseSourceFiles(string[] paths)
+
+        public List<FunctionSummary> ParseSourceFiles(string[] paths, IModifiedBlockDetector modificationDetector)
         {
             List<FunctionSummary> functions = new List<FunctionSummary>();
             foreach(var path in paths)
             {
-                var funcs = ParseSourceFile(path);
+                var funcs = ParseSourceFile(path, modificationDetector);
                 if (funcs != null)
                     functions.AddRange(funcs);
             }
@@ -60,10 +67,10 @@ namespace SourceCodeParser.Domain
         //    var paths = System.IO.Directory.GetFiles(directoryPath, "*", System.IO.SearchOption.AllDirectories);
         //    return ParseSourceFiles(paths);
         //}
-
-        public void OutputModifiedFunctions(string[] paths)
+//new ModificationParser.ModificationParser(modificationDetector)
+        public void OutputFunctions(string[] paths, IModifiedBlockDetector modificationDetector = null)
         {
-            var functions = ParseSourceFiles(paths);
+            var functions = ParseSourceFiles(paths, modificationDetector);
             output.Write(functions);
         }
     }

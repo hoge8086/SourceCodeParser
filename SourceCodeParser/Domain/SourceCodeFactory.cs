@@ -13,16 +13,16 @@ namespace SourceCodeParser.Domain
     {
         private ITextFileReader textFileReader;
         private IParserFactory sourceParserFactory;
-        private ModificationParser.ModificationParser modificationParser;
+        //private ModificationParser.ModificationParser modificationParser;
 
         public SourceCodeFactory(
             ITextFileReader textFileReader,
-            IParserFactory parserFactory,
-            ModificationParser.ModificationParser modificationParser)
+            IParserFactory parserFactory)
+            //ModificationParser.ModificationParser modificationParser)
         {
             this.textFileReader = textFileReader;
             this.sourceParserFactory = parserFactory;
-            this.modificationParser = modificationParser;
+            //this.modificationParser = modificationParser;
         }
 
         public SourceCode Create(string path)
@@ -36,8 +36,8 @@ namespace SourceCodeParser.Domain
                     path,
                     code,
                     sourceParser.ParseComments(code),
-                    sourceParser.ParseFunctions(code),
-                    modificationParser.Parse(code));
+                    sourceParser.ParseFunctions(code));
+                    //modificationParser.Parse(code));
         }
     }
 }

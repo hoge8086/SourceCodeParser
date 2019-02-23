@@ -5,16 +5,16 @@ namespace SourceCodeParser.Domain
 {
     public class Modifications
     {
-        public List<LineRange> ModefiedRange { get; private set; }
+        public List<LineRange> RangeList { get; private set; }
 
-        public Modifications(List<LineRange> modefiedRange)
+        public Modifications(List<LineRange> rangeList)
         {
-            this.ModefiedRange = modefiedRange;
+            this.RangeList = rangeList;
         }
 
         public bool IsModified(LineRange range)
         {
-            return ModefiedRange.Any(r => r.Overlap(range));
+            return RangeList.Any(r => r.Overlap(range));
         }
     }
 }

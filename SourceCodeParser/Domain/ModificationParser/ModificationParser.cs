@@ -46,7 +46,7 @@ namespace SourceCodeParser.Domain.ModificationParser
             this.detector = detector;
         }
 
-        public List<LineRange> Parse(string code)
+        public Modifications Parse(string code)
         {
             var rangeList = new List<LineRange>();
             var currentBlock = new CurrentModifiedBlock();
@@ -69,7 +69,7 @@ namespace SourceCodeParser.Domain.ModificationParser
                     }
                 }
             }
-            return rangeList;
+            return new Modifications(rangeList);
         }
     }
 }

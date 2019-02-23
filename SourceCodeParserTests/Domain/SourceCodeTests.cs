@@ -22,11 +22,11 @@ namespace SourceCodeParser.Domain.Tests
             var detector = new SingleAndMultiLineModifiedBlockDetector("修正行コメント", "▼", "▲");
             var factory = new SourceCodeFactory(
                             new TextFileReaderImpl(),
-                            new ParserFactoryImpl(),
-                            new ModificationParser.ModificationParser(detector));
+                            new ParserFactoryImpl());
+                            //new ModificationParser.ModificationParser(detector));
             
             var source = factory.Create(@"CEditView_Mouse.cpp");
-            var funcs = source.ModifiedFunctionSummary();
+            var funcs = source.FunctionSummary();
             System.IO.File.WriteAllText("out.txt", string.Join("\n", funcs));
 
         }
@@ -38,11 +38,11 @@ namespace SourceCodeParser.Domain.Tests
             var reader = new TextFileReaderImpl();
             var parser = new ModificationParser.ModificationParser(detector);
             var m = parser.Parse(reader.Read("modification.cpp"));
-            Assert.IsTrue(m.Count == 4);
-            Assert.IsTrue(m.Any(x => x.Begin == 6 & x.End == 8));
-            Assert.IsTrue(m.Any(x => x.Begin == 11 & x.End == 41));
-            Assert.IsTrue(m.Any(x => x.Begin == 51 & x.End == 51));
-            Assert.IsTrue(m.Any(x => x.Begin == 54 & x.End == 54));
+            Assert.IsTrue(m.RangeList.Count == 4);
+            Assert.IsTrue(m.RangeList.Any(x => x.Begin == 6 & x.End == 8));
+            Assert.IsTrue(m.RangeList.Any(x => x.Begin == 11 & x.End == 41));
+            Assert.IsTrue(m.RangeList.Any(x => x.Begin == 51 & x.End == 51));
+            Assert.IsTrue(m.RangeList.Any(x => x.Begin == 54 & x.End == 54));
         }
     }
 }
