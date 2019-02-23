@@ -26,9 +26,9 @@ namespace SourceCodeParser.Infrastructure
                 {
                     var f = functions[i];
                     var line = string.Format("{0},{1},{2},{3}",
-                                    CreateCsvField(Path.GetDirectoryName(f.Path)),
+                                    CreateCsvField(Path.GetFileName(Path.GetDirectoryName(f.Path))),
                                     CreateCsvField(Path.GetFileNameWithoutExtension(f.Path)),
-                                    CreateCsvField(f.Definition),
+                                    CreateCsvField(f.Definition.Replace("::", "")),
                                     CreateCsvField(f.Comment));
                     sr.WriteLine(line);
                 }

@@ -62,7 +62,7 @@ namespace ModifiedFunctionPicker
 
                 IModifiedBlockDetector detector = null;
                 if (keyword != null)
-                    detector = new SingleAndMultiLineModifiedBlockDetector("▼", "▲", keyword);
+                    detector = new SingleAndMultiLineModifiedBlockDetector(keyword, "▼", "▲");
 
                 service.OutputFunctions(paths, detector);
             }
@@ -82,11 +82,11 @@ namespace ModifiedFunctionPicker
                 {
                     i++;
                     if (i < args.Length)
-                        output = new OutputModifiedFunctionsCsv(args[1]);
+                        output = new OutputModifiedFunctionsCsv(args[i]);
                     else
                         InvalidCommand("出力ファイル名を引数で与えてください.", args[0]);
                 }
-                else if (args[i++].Equals("/keyword", StringComparison.OrdinalIgnoreCase))
+                else if (args[i].Equals("/keyword", StringComparison.OrdinalIgnoreCase))
                 {
                     i++;
                     if (i < args.Length)
@@ -114,7 +114,7 @@ namespace ModifiedFunctionPicker
 
         static private void InvalidCommand(string error, string exePath)
         {
-            new FormatException(
+            throw new FormatException(
                     string.Format(
                         "エラー: {0}\n" + 
                         "Usage: {1} [/csv <file_name>] [/keyword <keyword>] <source_file_directory_path>",
