@@ -102,23 +102,56 @@ namespace SourceCodeParser.Domain.SourceCodeParser
             return functions;
         }
 
+        /// <summary>
+        /// 関数ブロックを抽出する
+        /// ※IndexOf()による性能改善を実施(2019/2/24)
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         private string ExtractFunctionCode(string code)
         {
             int nest = 0;
-            for(int i=0; i<code.Length; i++)
+            for(int i=0; i<code.Length;)
             {
-                if (code.Substring(i).StartsWith(setting.FunctionBeginMarker))
-                    nest++;
+                int begin = code.IndexOf(setting.FunctionBeginMarker, i);
+                int end = code.IndexOf(setting.FunctionEndMarker, i);
 
-                if (code.Substring(i).StartsWith(setting.FunctionEndMarker))
+                if (end < 0)    //終了文字が見つからないことはありえない
+                    break;
+
+                if(begin > 0 && begin < end)    //開始文字が終了文字より先に見つかった場合
+                {
+                    nest++;
+                    i = begin + setting.FunctionBeginMarker.Length;
+                }
+                else    //終了文字が開始文字より先に見つかった、あるいは終了文字しか見つからない場合
                 {
                     nest--;
+                    i = end + setting.FunctionEndMarker.Length;
                     if (nest <= 0)
                         return code.Substring(0, i + 1);
                 }
             }
             return code;
         }
+
+        //private string ExtractFunctionCode_old(string code)
+        //{
+        //    int nest = 0;
+        //    for(int i=0; i<code.Length; i++)
+        //    {
+        //        if (code.Substring(i).StartsWith(setting.FunctionBeginMarker))
+        //            nest++;
+
+        //        if (code.Substring(i).StartsWith(setting.FunctionEndMarker))
+        //        {
+        //            nest--;
+        //            if (nest <= 0)
+        //                return code.Substring(0, i + 1);
+        //        }
+        //    }
+        //    return code;
+        //}
 
         private int CountLine(string text)
         {
