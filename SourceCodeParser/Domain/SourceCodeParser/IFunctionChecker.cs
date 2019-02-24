@@ -2,7 +2,7 @@
 {
     public interface IFunctionChecker
     {
-        //コンストラクタの引数は(string[] args)である必要がある.
+        //コンストラクタの引数は(string str1, [string str2] ...)である必要がある.
         bool check(string functionDefinition);
     }
 }
