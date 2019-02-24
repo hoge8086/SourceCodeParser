@@ -50,10 +50,13 @@
     <Compile Include="Domain\ModificationParser\ModificationParser.cs" />
     <Compile Include="Domain\ParseSourceCodeService.cs" />
     <Compile Include="Domain\SourceCodeFactory.cs" />
+    <Compile Include="Domain\SourceCodeParser\FunctionChecker\BeginEndPairChecker.cs" />
     <Compile Include="Domain\SourceCodeParser\Comment.cs" />
     <Compile Include="Domain\SourceCodeParser\Function.cs" />
     <Compile Include="Domain\Common\LineRange.cs" />
     <Compile Include="Domain\SourceCode.cs" />
+    <Compile Include="Domain\SourceCodeParser\IFunctionChecker.cs" />
+    <Compile Include="Domain\SourceCodeParser\Setting.cs" />
     <Compile Include="Domain\SourceCodeParser\SourceCodeParser.cs" />
     <Compile Include="Domain\Common\StringUtil.cs" />
     <Compile Include="Infrastructure\OutputModifiedFunctionsCsv.cs" />

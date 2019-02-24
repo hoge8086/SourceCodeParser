@@ -67,7 +67,7 @@ namespace SourceCodeParser.Domain
         //    var paths = System.IO.Directory.GetFiles(directoryPath, "*", System.IO.SearchOption.AllDirectories);
         //    return ParseSourceFiles(paths);
         //}
-//new ModificationParser.ModificationParser(modificationDetector)
+
         public void OutputFunctions(string[] paths, IModifiedBlockDetector modificationDetector = null)
         {
             var functions = ParseSourceFiles(paths, modificationDetector);

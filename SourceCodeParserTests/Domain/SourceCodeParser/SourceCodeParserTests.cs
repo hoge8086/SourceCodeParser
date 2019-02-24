@@ -32,6 +32,21 @@ namespace SourceCodeParser.Domain.SourceCodeParser.Tests
             var result = string.Join("\n", functions);
             Assert.AreEqual(expect.Length, result.Length);
             Assert.AreEqual(expect, result);
+            System.IO.File.WriteAllText("out.txt", result);
+        }
+
+        [TestMethod()]
+        public void ParseFunctionsTest2()
+        {
+            var file = @"CppTest.cpp";
+            var parser = factory.createParser(file);
+            var functions = parser.ParseFunctions(reader.Read(file));
+            Assert.IsTrue(functions.Count == 4);
+            Assert.IsTrue(functions.Any(x => x.Definition == "void func()"));
+            Assert.IsTrue(functions.Any(x => x.Definition == "int main()"));
+            Assert.IsTrue(functions.Any(x => x.Definition == "int GetiValue()"));
+            Assert.IsTrue(functions.Any(x => x.Definition == "CManiac& operator=(int iValue)"));
+
         }
     }
 }

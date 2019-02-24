@@ -1,45 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Runtime.Serialization;
-
 using SourceCodeParser.Domain.Common;
+
 namespace SourceCodeParser.Domain.SourceCodeParser
 {
     public class SourceCodeParser
     {
-        [DataContract]
-        public class Setting
-        {
-            [DataMember]
-            public List<string> TargetExtensions{ get; set; }
-            [DataMember]
-            public List<string> CommentAndIgnoreRegexp { get; set; }
-            [DataMember]
-            public List<string> FunctionRegexp { get; set; }
-            [DataMember]
-            public string FunctionBeginMarker { get; set; }
-            [DataMember]
-            public string FunctionEndMarker { get; set; }
-
-            public Setting(
-                List<string> commentAndIgnoreRegexp,
-                List<string> functionRegexps,
-                string functionBeginMarker,
-                string functionEndMarker)
-            {
-                CommentAndIgnoreRegexp = commentAndIgnoreRegexp;
-                FunctionRegexp = functionRegexps;
-                FunctionBeginMarker = functionBeginMarker;
-                FunctionEndMarker = functionEndMarker;
-            }
-
-        }
-        private Setting setting;
+        public Setting Setting { get; }
+        private List<IFunctionChecker> functionCheckers;
 
         public SourceCodeParser(Setting setting)
         {
-            this.setting = setting;
+            this.Setting = setting;
+            functionCheckers = setting.CreateFunctionCheckers();
         }
 
         /// <summary>
@@ -53,7 +27,7 @@ namespace SourceCodeParser.Domain.SourceCodeParser
             int currentIndex = 0;
 
             var comments = new List<Comment>();
-            Regex r = new Regex(string.Join("|", setting.CommentAndIgnoreRegexp), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            Regex r = new Regex(string.Join("|", Setting.CommentAndIgnoreRegexp), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
             for(Match m = r.Match(source); m.Success; m = m.NextMatch())
             {
@@ -67,7 +41,7 @@ namespace SourceCodeParser.Domain.SourceCodeParser
         public List<Comment> ParseComments(string code)
         {
             var comments = new List<Comment>();
-            Regex r = new Regex(string.Join("|", setting.CommentAndIgnoreRegexp), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            Regex r = new Regex(string.Join("|", Setting.CommentAndIgnoreRegexp), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
             for(Match m = r.Match(code); m.Success; m = m.NextMatch())
             {
@@ -90,16 +64,24 @@ namespace SourceCodeParser.Domain.SourceCodeParser
             //System.Diagnostics.Debug.WriteLine(source);
 
             var functions = new List<Function>();
-            Regex r = new Regex(string.Join("|", setting.FunctionRegexp), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            Regex r = new Regex(string.Join("|", Setting.FunctionRegexp), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
             for(Match m = r.Match(code); m.Success; m = m.NextMatch())
             {
-                var range = new LineRange(
-                        CountLine(code.Substring(0, m.Index)),
-                        CountLine(ExtractFunctionCode(code.Substring(m.Index))));
-                functions.Add(new Function(range, m.Value));
+                if(IsFucntion(m.Value))
+                {
+                    var range = new LineRange(
+                            CountLine(code.Substring(0, m.Index)),
+                            CountLine(ExtractFunctionCode(code.Substring(m.Index))));
+                    functions.Add(new Function(range, m.Value));
+                }
             }
             return functions;
+        }
+
+        private bool IsFucntion(string functionDefinition)
+        {
+            return functionCheckers.All(c => c.check(functionDefinition));
         }
 
         /// <summary>
@@ -113,8 +95,8 @@ namespace SourceCodeParser.Domain.SourceCodeParser
             int nest = 0;
             for(int i=0; i<code.Length;)
             {
-                int begin = code.IndexOf(setting.FunctionBeginMarker, i);
-                int end = code.IndexOf(setting.FunctionEndMarker, i);
+                int begin = code.IndexOf(Setting.FunctionBeginMarker, i);
+                int end = code.IndexOf(Setting.FunctionEndMarker, i);
 
                 if (end < 0)    //終了文字が見つからないことはありえない
                     break;
@@ -122,36 +104,18 @@ namespace SourceCodeParser.Domain.SourceCodeParser
                 if(begin > 0 && begin < end)    //開始文字が終了文字より先に見つかった場合
                 {
                     nest++;
-                    i = begin + setting.FunctionBeginMarker.Length;
+                    i = begin + Setting.FunctionBeginMarker.Length;
                 }
                 else    //終了文字が開始文字より先に見つかった、あるいは終了文字しか見つからない場合
                 {
                     nest--;
-                    i = end + setting.FunctionEndMarker.Length;
+                    i = end + Setting.FunctionEndMarker.Length;
                     if (nest <= 0)
-                        return code.Substring(0, i + 1);
+                        return code.Substring(0, i);
                 }
             }
             return code;
         }
-
-        //private string ExtractFunctionCode_old(string code)
-        //{
-        //    int nest = 0;
-        //    for(int i=0; i<code.Length; i++)
-        //    {
-        //        if (code.Substring(i).StartsWith(setting.FunctionBeginMarker))
-        //            nest++;
-
-        //        if (code.Substring(i).StartsWith(setting.FunctionEndMarker))
-        //        {
-        //            nest--;
-        //            if (nest <= 0)
-        //                return code.Substring(0, i + 1);
-        //        }
-        //    }
-        //    return code;
-        //}
 
         private int CountLine(string text)
         {
